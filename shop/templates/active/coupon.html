@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block panel%}
+{% load static%}
+<div class="detail-nav weui-flex">
+	<img src="{%static 'icons/xiaoyu.png'%}" alt="" class="weui-tabbar__icon" style="width:16px;height:16px;padding:5px 0;">
+    <div class="weui-flex__item detail-nav-center">
+    	{{coupon.get_couponOption_display}}
+    </div>
+</div>
+<style>
+	#quan{
+		text-align: center;
+		padding:15px 10px;
+	}
+	#quan p{
+		
+	}
+</style>
+<div id="quan">
+	<p style="font-size: 15px;color:#999999;">截止日期:{{coupon.endtime}}</p>
+	<p style="font-size: 15px;">已领取{{coupon.complete}}/{{coupon.count}}张</p>
+	<p>
+		<img src="{%static 'icons/u3209.png'%}" alt=""/>
+	</p>
+	<p style="font-size: 18px;font-weight: bold;"></p>
+	<p style="font-size: 13px;color:#999999;">{{coupon.description}}</p>
+	<p>
+		{%if result%}
+			<span class="weui-btn weui-btn_mini weui-btn_default">已领取</span>
+		{%else%}
+			<span id="get_coupon" class="weui-btn weui-btn_mini weui-btn_primary">领取</span>
+		{%endif%}
+	</p>
+	<p>
+	{%if locations|length > 0 %}
+	活动地点:
+	{%endif%}
+	{%for item in locations%}
+	<span>{{item}}</span>
+	{%endfor%}
+	</p>
+	
+	<p>
+	{%if tribes.length|length > 0 %}
+	活动社群:
+	{%endif%}
+	{%for item in tribes%}
+	<span>{{item}}</span>
+	{%endfor%}
+	</p>
+	<p>
+	活动会员:
+	{%for item in ranks%}
+	<span>{{item}}</span>
+	{%endfor%}
+	</p>
+	<script>
+		$("#get_coupon").bind("click",function(){
+			var that=this;
+			$.get("/getCoupon/{{coupon.id}}",function(response){
+				if(response.result){					
+					$(that).removeClass('weui-btn_primary').addClass('weui-btn_default');
+					$(that).unbind();
+				}
+				weui.toast(response.tip)
+			})
+		})
+	</script>
+	<script>
+    //微信分享
+	    wx.ready(function(){
+	        var data={
+	            title:'{{coupon.name}}',
+	            link:'http://www.fangchengku.com/coupon/{{coupon.id}}',
+	            imgUrl:'http://www.fangchengku.com/static/icons/u3209.png',
+	            desc:'{{coupon.description}}',
+	            type:'',
+	            dataUrl:'',
+	            success:function(){},
+	            cancel:function(){}
+	        }
+	        wx.onMenuShareTimeline(data);
+	        wx.onMenuShareAppMessage(data);
+	        wx.onMenuShareQZone(data);
+	        wx.onMenuShareQQ(data);
+	    })
+	</script>
+</div>
+{%endblock%}

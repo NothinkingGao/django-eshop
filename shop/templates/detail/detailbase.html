@@ -1,0 +1,200 @@
+{% extends "menubase.html" %}
+{% block panel %}
+{% load static%}
+<style>
+    .left_array_icon{
+        border:none;
+        background: url('/static/icons/xiaoyu.png') no-repeat;
+    }
+</style>
+<div class="detail-nav weui-flex" style="position: fixed;top:0;z-index: 5000;width: 100%;background: #fff;">
+    <a href="{{backUrl}}" alt="" class="left_array_icon">
+	   <!-- <img src="{%static 'icons/xiaoyu.png'%}" alt="" class="weui-tabbar__icon" style="width:16px;height:16px;padding:8px 0;"> -->
+    </a>
+    <div class="weui-flex__item detail-nav-center">
+        {%block detail_link%}
+    	   
+        {%endblock%}
+    	<a href="#standard-area">规格</a>
+    	<a href="#package-area">包装售后</a>
+    	<a href="#commet-area" class="last">评价</a>
+    </div>
+</div>
+{%block detail_panel%}
+{%endblock%}
+{%endblock%}
+{%block menu%}
+<style>
+    .weui-tabbar__item_two {
+      display: block;
+      -webkit-box-flex: 2;
+      -webkit-flex: 1.5;
+              flex: 1.5;
+      font-size: 0;
+      color: #999999;
+      text-align: center;
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    }
+</style>
+    <a href="javascript:;" id="collection-icon" class="weui-tabbar__item">
+	    <span style="display: inline-block;position: relative;">
+	        <img src="{%static 'icons/shouchang.png'%}" alt="" class="weui-tabbar__icon">
+	    </span>
+	    <p class="weui-tabbar__label">收藏</p>
+	</a>
+	<a href="/shopcart" class="weui-tabbar__item">
+	    <span style="display: inline-block;position: relative;">
+	        <img src="{%static 'icons/cart.png'%}" alt="" class="weui-tabbar__icon">
+	        <span id="shopcart_count" class="product-count" style="position: absolute;top: -2px;right: -13px;"></span>
+	    </span>
+	    <p class="weui-tabbar__label">购物车</p>
+	</a>
+    <a href="javascript:;" id="add" class="weui-tabbar__item_two">
+        <div class="weui-btn weui-btn_warn shopcart-pay-btn shopcart-pay-btn-orange" style="">加入购物车</div>
+    </a>
+    <a href="javascript:;" id="buy-right-now" class="weui-tabbar__item_two">
+        <div class="weui-btn weui-btn_warn shopcart-pay-btn">立即购买</div>
+    </a>
+    <input type="hidden" id="productID" value='{{product.id}}'/>
+    <input type="hidden" id="optionID" value='{{defaultOption.id}}'/>
+    <input type="hidden" id="shoptypeID" value='{{shoptypeID}}'/>
+    <input type="hidden" id="shoptype" value='{{shoptype}}'/>
+    <input type="hidden" id="count" value='1'/>
+    {% csrf_token %}
+    <script>
+        //获取购物车中产品数
+        $.get('/getShopCartItemCount',function(data){
+            if (data.count!=0){
+                $("#shopcart_count").html(data.count).addClass("weui-badge");
+            }else{
+                $("#shopcart_count").removeClass("weui-badge");
+            }
+        });
+        //绑定搜藏事件
+        $("#collection-icon").bind("click",function(){
+            var productID=$("#productID").val();
+            $.get('/ajax/collect/'+productID,function(data){
+                console.log(data.result);
+                if(data.result==false){
+                    weui.toast('取消收藏！')
+                }else{
+                    weui.toast('收藏成功!')
+                }
+
+            })
+        })
+        //加入购物车,buytype:加入购物车|立即购买
+        function addInCart(buytype){
+            var productID=$("#productID").val();
+            var optionID=$("#optionID").val();
+            var shoptype=$("#shoptype").val();
+            var shoptypeID=$("#shoptypeID").val();
+            var count=$("#count").val()
+            var csrftoken = Cookies.get('csrftoken');
+            $.ajax({
+                type:'POST',
+                url:'/addInCart',
+                headers:{"X-CSRFToken":csrftoken},
+                data:{product_id:productID,option_id:optionID,shoptype:shoptype,shoptypeID:shoptypeID,count:count,buytype:buytype},
+                success:function(data){
+                    if(data.result=='success'){
+                        if(data.buytype=='addincart'){
+                            //修改购物车上图标数据
+                            var countObj=$('#shopcart_count');
+                            var countStr=$(countObj).html();
+                            var count=countStr.length>0?parseInt(countStr):0;
+                            $(countObj).html(count+1).addClass("weui-badge");
+                            //加入成功提示
+                            weui.toast('加入成功', {
+                                duration: 500,
+                                className: "bears"
+                            });
+                            $('.bears').removeClass('weui-animate-fade-in');
+                        }else{
+                            window.location.href="/orderConfirm"
+                        }
+                    }else if(data.result=='empty'){
+                        weui.topTips('您所选产品暂时缺货!', {
+                            duration: 3000,
+                            className: "custom-classname",
+                            callback: function () {
+                                console.log('close');
+                            }
+                        });
+                    }else if(data.result=='over'){
+                        weui.topTips('活动已结束!', {
+                            duration: 3000,
+                            className: "custom-classname",
+                            callback: function () {
+                                console.log('close');
+                            }
+                        });
+                    }else if(data.result=='emptyaddress'){
+                        window.location.href="/newAddress/active"
+                    }
+                    else if(data.result=='notsatisfy'){
+                        weui.topTips('您不满足活动范围!', {
+                            duration: 3000,
+                            className: "custom-classname",
+                            callback: function () {
+                                console.log('close');
+                            }
+                        });
+                    }
+                    else{
+                        console.log(data.result);
+                    }
+                },
+                error:function(xhr,type){
+                    console.log('ajax error!')
+                }
+
+            })
+        }
+        $('#add').bind('click',function(e){
+            //提交数据到后台
+            addInCart('addincart');
+        })
+        //立即购买
+        $('#buy-right-now').bind('click',function(){
+            addInCart('rightnow');
+        })
+        /* select */
+        $('#product-option').bind('click', function () {
+            weui.productSelect('{{product.number}}',[
+                    {%for option in options%}
+                        {
+                            option:'{{option.name}}',
+                            optionID:{{option.id}},
+                            price:'{{option.price}}',
+                            thumb:'/media/{{option.avator}}',
+                            count:1,
+                            stock:{{option.count}}
+                        },
+                    {%endfor%}
+                    
+                ],
+                {
+                    index:0,
+                    optionback:function(evt){
+                        $("#optionID").val(evt.optionID);
+                        $(".option_name").html(evt.option)
+                        $(".option_price").html(evt.price)
+                    },
+                    buyback:function(evt){
+                        $("#count").val(evt.count)
+                        addInCart('addincart');
+                        $("#count").val(1)
+                    }
+                });
+        });
+        //商品详情中图片自动缩放
+        var contentWidth=$(".detail_body").width()-30;
+
+        $('.detail_body img').each(function(index){
+            var percent=this.width/this.height;
+            $(this).width(contentWidth);
+            $(this).height(contentWidth/percent);
+        })
+    </script>
+{%endblock%}

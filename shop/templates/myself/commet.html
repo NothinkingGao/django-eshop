@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block panel %}
+{%load static%}
+<script>
+	$(function() {
+      //评分js
+      var arr = ["1分", "2分", "3分", "4分", "5分"];
+      var num = -1;
+      $(".weui-rater a").mouseover(function() {
+          var thisL = $(this).index();
+          for (var i = 0; i < thisL; i++) {
+              $(".weui-rater a").eq(i).addClass('checked');
+          }
+          for (var i = thisL; i < 5; i++) {
+              $(".weui-rater a").eq(i).removeClass('checked');
+          }
+          $(this).addClass('checked');
+      })
+      $(".weui-rater a").mouseout(function() {
+          var thisL = $(this).index();
+          for (var i = thisL; i < 5; i++) {
+              $(".weui-rater a").eq(i).removeClass('checked');
+          }
+      })
+      $(".weui-rater").mouseout(function() {
+
+          for (var i = 0; i < num; i++) {
+              $(".weui-rater a").eq(i).addClass('checked');
+          }
+      })
+      $(".weui-rater a").click(function() {
+          var thisL = $(this).index();
+          $("#fen").html(arr[thisL]);
+          $(this).addClass('checked');
+          num = thisL + 1;
+          console.log(num);
+      })
+
+  });
+</script>
+<div class="weui-panel weui-panel_access">
+    <div class="weui-panel__hd">
+      <div class="weui-flex" style="color:#999999;font-size: 13px;">
+          <div class="weui-flex__item">发布评论</div>
+          <span><a href="/evaluateSuccess">发布</a></span>
+      </div>
+    </div>
+    <div class="weui-panel__bd">
+        <a href="/orderdetail" class="weui-media-box weui-media-box_appmsg">
+            <div class="weui-media-box__hd">
+                <img class="weui-media-box__thumb" src="{%static 'icons/weui.png'%}" alt="">
+            </div>
+            <div class="weui-media-box__bd">
+                <h4 class="weui-media-box__title">这是一个很好的产品名字</h4>
+            </div>
+        </a>
+    </div>
+</div>
+
+<div class="weui-cells weui-cells_form">
+	<div class="weui-cell">
+		<div class="weui-cell__bd">
+			<div class="weui-rater">
+			  <a data-num = "0" class="weui-rater-box checked"> <span class="weui-rater-inner">★</span> </a>
+			  <a data-num = "1" class="weui-rater-box"> <span class="weui-rater-inner">★</span> </a>
+			  <a data-num = "2" class="weui-rater-box"> <span class="weui-rater-inner">★</span> </a>
+			  <a data-num = "3" class="weui-rater-box"> <span class="weui-rater-inner">★</span> </a>
+			  <a data-num = "4" class="weui-rater-box"> <span class="weui-rater-inner">★</span> </a>
+			  <span id="fen" class="weui_cells_title">5分</span>
+			</div>
+		</div>
+	</div>
+  <div class="weui-cell">
+      <div class="weui-cell__bd">
+          <textarea class="weui-textarea" placeholder="请写下您宝贵的意见" rows="3"></textarea>
+          <div class="weui-textarea-counter"><span>0</span>/200</div>
+      </div>
+  </div>
+</div>
+{%endblock%}

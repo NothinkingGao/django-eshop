@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% block panel %}
+{%load static%}
+<div class="weui-panel weui-panel_access">
+        <div class="weui-panel__hd">
+        订单详情
+        </div>
+        <div class="weui-panel__bd">
+        	<a class="weui-cell weui-cell_access" href="javascript:;">
+                <div class="weui-cell__bd weui-cell_primary">
+                    <h4>
+                        <span>{{order.receive_name}}</span>
+                        <span>{{order.mobile}}</span>
+                        <span class="weui-badge" style="margin-left: 5px;">收货地址</span>
+                    </h4>
+                    <p>
+                        <span style="font-size:14px;">{{order.location}}{{order.detail}}</span>
+                    </p>
+                </div>
+            </a>
+        	<div class="weui-cells">
+        		<a class="weui-cell weui-cell_access" href="javascript:;">
+                    <div class="weui-cell__bd weui-cell_primary">
+                    	<div class="weui-flex" style="text-align: center;padding:5px 0;">
+                            {%for item in order.orderitem_set.all%}
+							<div class="weui-flex__item">
+                        		<img src="/media/{{item.productOption.avator}}" alt="" class="img-max" />
+                        	</div>
+                            {%endfor%}
+                        	<div class="weui-flex__item">
+                        	</div>
+                        	<div class="weui-flex__item">
+                        	</div>
+                        </div>
+                    </div>
+                    <span class="weui-cell__ft">共{{order.orderitem_set.all|length}}件</span>
+                </a>
+        	</div>
+        	<div class="weui-cells"  style="font-size:14px;">
+        		<div class="weui-cell weui-cell_access" href="javascript:;">
+        			<div class="weui-cell__bd weui-cell_primary">
+        				<p>
+        					<span>订单编号：</span>
+        					<span>{{order.orderNumber}}</span>
+        				</p>
+        				<p>
+        					<span>下单时间：</span>
+        					<span>{{order.appendtime}}</span>
+        				</p>
+        			</div>
+        		</div>
+        		<div class="weui-cell weui-cell_access" href="javascript:;">
+        			<div class="weui-cell__bd weui-cell_primary">
+        				<p>
+        					<span>订单金额：</span>
+        					<span>${{order.totalMoney}}</span>
+        				</p>
+        				<p>
+        					<span>订单状态：</span>
+        					<span>{{order.orderStatusOption}}</span>
+        				</p>
+        			</div>
+        		</div>
+        		<div class="weui-cell weui-cell_access" href="javascript:;">
+        			<div class="weui-cell__bd weui-cell_primary">
+        				<p>
+        					<span>支付方式：</span>
+        					<span>在线支付</span>
+        				</p>
+        			</div>
+        		</div>
+        		<div class="weui-cell weui-cell_access" href="javascript:;">
+        			<div class="weui-cell__bd weui-cell_primary">
+        				<p>
+        					<span>配送方式：</span>
+        					<span>普通快递</span>
+        				</p>
+        			</div>
+        		</div>
+<!--                 <div class="weui-cell weui-cell_access" href="javascript:;">
+    <div class="weui-cell__bd weui-cell_primary">
+        <p>
+            <span>我的部落：</span>
+            <span>{{order.user.tribe.name}}</span>
+        </p>
+    </div>
+</div> -->
+        		<div class="weui-cell weui-cell_access" href="javascript:;">
+        			<div class="weui-cell__bd weui-cell_primary">
+        				<p>商品总额</p>
+        			</div>
+        			<span>${{order.totalMoney}}</span>
+        		</div>
+        		<div class="weui-cell weui-cell_access" href="javascript:;">
+        			<div class="weui-cell__bd weui-cell_primary">
+        				<p>+运费</p>
+        			</div>
+        			<span>00.00</span>
+        		</div>
+        	</div>
+        </div>
+</div>
+{%endblock%}
+{%block menu%}
+    <div class="weui-flex__item" style="text-align: center;">
+    	<a href="" class="bottom_nav">删除订单</a>
+    </div>
+    <div class="weui-flex__item" style="text-align: center;">
+    	
+    </div>
+    <div class="weui-flex__item" style="text-align: center;">
+    	<a href="/evaluate" class="bottom_nav">评价</a>
+    </div>
+    <div class="weui-flex__item" style="text-align: center;">
+    	<a href=""  class="bottom_nav"> 再次购买</a>
+    </div>
+    <div class="weui-flex__item" style="text-align: center;">
+    	<a href=""  class="bottom_nav"> 申请售后</a>
+    </div>
+{%endblock%}

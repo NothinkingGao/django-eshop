@@ -1,0 +1,14 @@
+{% extends "./detailbase.html" %}
+{%block detail_panel%}
+{%load static%}
+<div class="weui-cells" style="font-size: 13px;">
+    {%for commet in product.commet_set.all%}
+        <a class="weui-cell weui-cell_access" href="javascript:;">
+            <div class="weui-cell__hd"><img src="{{commet.user.avator_url}}" alt="" style="width:20px;margin-right:5px;display:block"></div>
+            <div class="weui-cell__bd">
+                <p>{{commet.body}}</p>
+            </div>
+        </a>
+    {%endfor%}
+</div>
+{%endblock%}

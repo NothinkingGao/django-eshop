@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block panel %}
+{%load static%}
+<div class="weui-panel weui-panel_access">
+            <div class="weui-panel__hd">我的果券</div>
+            <div class="weui-panel__bd">
+                {%for my in mycoupons%}
+                    <div class="weui-media-box weui-media-box_appmsg">
+                        <div class="weui-media-box__hd">
+                            <a href="/coupon/{{my.coupon.id}}">
+                                <img class="weui-media-box__thumb" src="/static/icons/active_{{my.coupon.shoptype}}.png" alt="">
+                            </a>
+                        </div>
+                        <div class="weui-media-box__bd">
+                            <h4 class="weui-media-box__title">
+                                <a href="/coupon/{{my.coupon.id}}">{{my.coupon.get_couponOption_display}}</a>
+                            </h4>
+                            <p class="weui-media-box__desc">
+                            	<div class="weui-flex" style="color:#999999;font-size: 13px;">
+    	                        	<div class="weui-flex__item">{{my.coupon.description}}</div>
+                                    {% if my.useStatus == "KY" %}
+    	                        	    <a href="/doUseMyCoupon/{{my.id}}" class="mycoupon_use weui-btn weui-btn_mini weui-btn_primary">使用</a>
+                                    {%else%}
+                                        <span>{{my.get_useStatus_display}}</span>
+                                    {%endif%}
+                            	</div>
+                            </p>
+                        </div>
+                    </div>
+                {%endfor%}
+            </div>
+        </div>
+{% endblock %}

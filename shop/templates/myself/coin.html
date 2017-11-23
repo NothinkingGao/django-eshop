@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block panel %}
+{%load static%}
+<div class="weui-panel weui-panel_access">
+    <div class="weui-panel__hd">
+    	<div class="weui-flex" style="color:#999999;font-size: 13px;">
+        	<div class="weui-flex__item">果币</div>
+        	<span><a href="/coinDetail">果币明细</a></span>
+    	</div>
+    </div>
+    <div class="weui-panel__bd">
+            <div class="weui-media-box__bd">
+                <div class="weui_msg hide" id="msg1" style="display: block; opacity: 1;">
+			        <div class="weui_icon_area">
+			        	<img src="{%static 'icons/u3198.png'%}" alt="guobi"/>
+			        </div>
+			        <div class="weui_text_area">
+			            <h2 class="weui_msg_title">果币:{{user.coinCount}}</h2>
+			            <p class="weui_msg_desc">100果币=1元人民币</p>
+			        </div>
+			        <div class="weui_opr_area">
+			            <p class="weui_btn_area">
+			                <a href="javascript:;" class="weui-btn weui-btn_primary" style="width:85%;">果币提现</a>
+			            </p>
+			        </div>
+			        <div class="weui_extra_area">
+			            
+			        </div>
+			    </div>
+            </div>
+    </div>
+</div>
+{% endblock %}

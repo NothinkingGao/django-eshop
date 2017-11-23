@@ -1,0 +1,112 @@
+{% extends "menubase.html" %}
+{% block panel %}
+<div id="tagnav" class="weui-navigator weui-navigator-wrapper">
+   <ul class="weui-navigator-list">
+        <li><a href="/index">首页</a></li>
+        {% for item in categorys%}
+            <li><a href="/category/{{item.id}}/1">{{item.name}}</a></li>
+        {%endfor%}
+   </ul>
+</div>
+<div class="slide" id="slide1">
+	{% load static %}
+    <ul>
+        {%for item in slider%}
+            <li>
+                <a href="{{item.url}}">
+                    <img src="media/{{item.image}}" data-src="media/{{item.image}}" alt="" />
+                </a>
+                <div class="slide-desc">{{item.name}}</div>
+            </li>
+        {%endfor%}
+    </ul>
+    <div class="dot">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</div>
+<script>
+    //顶部导航
+    TagNav('#tagnav',{
+        type: 'scrollToFirst',
+    });
+    $('#slide1').swipeSlide({
+        autoSwipe:true,//自动切换默认是
+        speed:3000,//速度默认4000
+        continuousScroll:true,//默认否
+        transitionType:'cubic-bezier(0.22, 0.69, 0.72, 0.88)',//过渡动画linear/ease/ease-in/ease-out/ease-in-out/cubic-bezier
+        lazyLoad:true,//懒加载默认否
+        firstCallback : function(i,sum,me){
+                    me.find('.dot').children().first().addClass('cur');
+                },
+                callback : function(i,sum,me){
+                    me.find('.dot').children().eq(i).addClass('cur').siblings().removeClass('cur');
+                }
+    });
+</script>
+<div class="weui-search-bar" id="searchBar">
+    <form class="weui-search-bar__form">
+        <div class="weui-search-bar__box">
+            <i class="weui-icon-search"></i>
+            <input class="weui-search-bar__input" id="searchInput" placeholder="搜索" required="" type="search">
+            <a href="javascript:" class="weui-icon-clear" id="searchClear"></a>
+        </div>
+        <label class="weui-search-bar__label" id="searchText">
+            <i class="weui-icon-search"></i>
+            <span>搜索</span>
+        </label>
+    </form>
+    <script>
+        weui.searchBar('#searchBar');
+    </script>
+    <a href="javascript:" class="weui-search-bar__cancel-btn" id="searchCancel">取消</a>
+</div>
+{%for item in page%}
+    <!-- 是否显示标题 -->
+    {%if item.showTitle %}
+        <div style="text-align: center;padding:15px 0;border-bottom: 1px solid #e4e4e4;">
+        	{{item.title}}
+        </div>
+    {%endif%}
+    <!-- 根据类别显示主体 -->
+    {%if item.type == '1'%}
+        <div class="weui-flex" style="padding:2px 5px;">
+            <div class="weui-flex__item">
+                <a href="{{item.cell_set.first.url}}">
+                    <img class="img-max" src="/media/{{item.cell_set.first.thumb}}" alt=""/>
+                </a>
+            </div>
+        </div>
+    {%elif item.type == '2'%}
+        <div class="weui-flex" style="padding:2px 5px;">
+            {%for cell in item.cell_set.all%}
+                <div class="weui-flex__item">
+                    <a href="{{cell.url}}"><img class="img-max" src="/media/{{cell.thumb}}" alt=""/></a>
+                </div>
+            {%endfor%}
+        </div>
+    {%elif item.type == '4'%}
+        <div class="weui-flex" style="text-align: center;padding:5px;">
+            {%for cell in item.cell_set.all%}
+            <div class="weui-flex__item">
+                <div class="placeholder">{{cell.name}}</div>
+                <div style="margin:0 5px;">
+                    <a href="{{cell.url}}"><img class="img-max" src="/media/{{cell.thumb}}" alt=""/></a>
+                </div>
+            </div>
+            {%endfor%}
+        </div>
+    {%endif%}
+{%endfor%}
+<!-- <div class="weui-loadmore">
+    <i class="weui-loading"></i>
+    <span class="weui-loadmore__tips">正在加载</span>
+</div> -->
+<script>
+    //更改首页导航处文字和图标颜色
+    $(function(){
+        $("#shop_index").addClass('weui-bar__item_on').find(".weui-tabbar__icon").attr('src','/static/icons/shouye_change.png');
+    })  
+</script>
+{% endblock %}

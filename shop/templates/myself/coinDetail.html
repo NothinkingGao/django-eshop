@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block panel %}
+{%load static%}
+<div class="weui-panel">
+    <div class="weui-panel__hd">果币明细</div>
+    <div class="weui-panel__bd">
+        <div class="weui-media-box weui-media-box_small-appmsg">
+            <div class="weui-cells">
+                {%for item in coinitems%}
+                <a class="weui-cell weui-cell_access" href="javascript:;">
+                    <div class="weui-cell__bd weui-cell_primary">
+                        <p>{{item.typename}}</p>
+                        <p style="color:#999999;font-size:13px;">{{item.changetime}}</p>
+                        <p style="color:#999999;font-size:13px;">{{item.detail}}</p>
+                    </div>
+                    <span class="weui-cell__ft">
+                    	{{item.change}}
+                    </span>
+                </a>
+                {%endfor%}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

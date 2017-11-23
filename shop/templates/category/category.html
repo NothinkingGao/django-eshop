@@ -1,0 +1,85 @@
+{% extends "menubase.html" %}
+{% block panel %}
+{%load static%}
+<div id="tagnav" class="weui-navigator weui-navigator-wrapper">
+       <ul class="weui-navigator-list">
+            <li><a href="/index">首页</a></li>
+            {% for item in categorys%}
+                <li><a href="/category/{{item.id}}/1">{{item.name}}</a></li>
+            {%endfor%}
+        </ul>
+</div>
+<script>
+  //顶部导航
+  TagNav('#tagnav',{
+      type: 'scrollToFirst',
+  });
+</script>
+<style>
+    .weui-product-category{
+        padding:10px 15px 10px 10px;
+        position: relative;
+    }
+    .weui-product-category:before{
+      content: " ";
+      position: absolute;
+      left: 0;
+      top: 0;
+      right: 0;
+      height: 1px;
+      border-top: 1px solid #E5E5E5;
+      color: #E5E5E5;
+      -webkit-transform-origin: 0 0;
+              transform-origin: 0 0;
+      -webkit-transform: scaleY(0.5);
+              transform: scaleY(0.5);
+      left: 15px;
+    }
+    div.weui-product-category{
+      color: #000000;
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    }
+    div.weui-product-category:active {
+      background-color: #ECECEC;
+    }
+</style>
+<div class="weui-search-bar" id="searchBar">
+    <form class="weui-search-bar__form">
+        <div class="weui-search-bar__box">
+            <i class="weui-icon-search"></i>
+            <input class="weui-search-bar__input" id="searchInput" placeholder="搜索" required="" type="search">
+            <a href="javascript:" class="weui-icon-clear" id="searchClear"></a>
+        </div>
+        <label class="weui-search-bar__label" id="searchText">
+            <i class="weui-icon-search"></i>
+            <span>搜索</span>
+        </label>
+    </form>
+    <a href="javascript:" class="weui-search-bar__cancel-btn" id="searchCancel">取消</a>
+</div>
+{% for product in products%}
+<a  href="/detail/{{product.id}}" class="weui-flex weui-product-category">
+    {% for option in product.productoption_set.all%}
+        {% if option.isdefault%} 
+        <div style="padding-right: 10px;">
+            <img class="weui-media-box__thumb" style="width: 80px;height: 80px;" src="/media/{{option.avator}}" alt="">
+        </div>
+        <div class="weui-flex__item">
+            <h4 class="small_title">{{product.name}}</h4>
+            <p class="weui-media-box__desc">{{product.description}}</p>
+            <div class="shopcart_price_line">
+                <div class="weui-flex">
+                    <div class="weui-flex__item">
+                        <div class="price">￥{{option.price}}</div>
+                    </div>
+<!--                     <div class="weui-price__count" style="font-size: 14px;">
+    加入购物车
+</div> -->
+                </div>
+            </div>
+        </div>
+        {%endif%}
+    {%endfor%}
+</a>
+{%endfor%}
+{%endblock%}

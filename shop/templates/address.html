@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block panel %}
+{%load static%}
+<div class="weui-flex weui-cells__title">
+    选择收货地址
+</div>
+<div class="weui-cells weui-cells_radio">
+    {%for address in addresses%}
+    <div style="position:relative;">
+        <img src="{%static 'icons/del2.png'%}" alt="" class="del-address-item" style="position:absolute;z-index:1000;right:2px;top:2px;width: 16px;"/>
+        <input type="hidden" class="address_id" value="{{address.id}}"/>
+        <label class="weui-cell weui-check__label" for="x{{address.id}}">
+            <div class="weui-cell__bd"> 
+                <h4>
+                    <span>{{address.name}}</span>
+                    <span>{{address.mobile}}</span>
+                </h4>
+                <p>
+                    <span style="font-size:14px;">{{address.location}}{{address.detail}}</span>
+                </p>
+            </div>
+            <span class="weui-cell__ft">
+                {% if address.isdefault%}
+                    <input class="weui-check" name="address" id="x{{address.id}}" checked="checked"  type="radio" />
+                {%else%}
+                    <input class="weui-check" name="address" id="x{{address.id}}"  type="radio" />
+                {%endif%}
+                <i class="weui-icon-checked"></i>
+            </span>
+        </label>
+    </div>
+    {%endfor%}
+    <script>
+        $(".del-address-item").bind('click',function(){
+            var that=$(this).parent();
+            var address_id=$(that).find(".address_id").val();
+            $.get('/delAddress/'+address_id,function(data){
+                console.log(data.result)
+                if(data.result==true){
+                    $(that).remove();
+                }
+            })
+        })
+        $(".weui-check__label").bind('click',function(){
+            var that=$(this).parent();
+            var address_id=$(that).find(".address_id").val();
+            $.get('/ajax/setDefaultAddress/'+address_id+'/{{url}}',function(data){
+                if(data.result=='wrongaddress'){
+                    weui.topTips('您所选地址不符合活动要求,请您重新选择!', {
+                            duration: 3000,
+                            className: "custom-classname",
+                            callback: function () {
+                                console.log('close');
+                            }
+                    });
+                }else{
+                    weui.toast('设置成功!')
+                    window.location.href='/{{url}}'
+                }
+            })   
+        })
+    </script>
+    <a href="/newAddress/{{url}}" class="weui-cell weui-cell_link">
+        <div class="weui-cell__bd">添加收货地址</div>
+    </a>
+</div>
+<div style="padding:10px 15px;">
+    <a href="/{{url}}">返回上一页</a>
+</div>
+{%endblock%}

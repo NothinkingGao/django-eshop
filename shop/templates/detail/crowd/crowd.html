@@ -1,0 +1,165 @@
+{% extends "../detailbase.html" %}
+{%block detail_link%}
+    <a href="/crowd/{{crowd.id}}">详情</a>
+{%endblock%}
+{%block detail_panel%}
+{%load static%}
+<div class="slide" id="slide1" style="margin-top: 43px;min-height: 300px;">
+    {% load static %}
+    <ul>
+        {%for item in product.productimage_set.all%}
+            <li>
+                <a href="#">
+                    <img src="/media/{{item.url}}" data-src="/media/{{item.url}}" alt="" />
+                </a>
+            </li>
+        {%endfor%}
+    </ul>
+    <div class="dot">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</div>
+<script>
+    $('#slide1').swipeSlide({
+        autoSwipe:true,//自动切换默认是
+        speed:3000,//速度默认4000
+        continuousScroll:true,//默认否
+        transitionType:'cubic-bezier(0.22, 0.69, 0.72, 0.88)',//过渡动画linear/ease/ease-in/ease-out/ease-in-out/cubic-bezier
+        lazyLoad:true,//懒加载默认否
+        firstCallback : function(i,sum,me){
+                    me.find('.dot').children().first().addClass('cur');
+                },
+                callback : function(i,sum,me){
+                    me.find('.dot').children().eq(i).addClass('cur').siblings().removeClass('cur');
+                }
+    });
+</script>
+<script>
+    //微信分享
+    wx.ready(function(){
+        var data={
+            title:'{{crowd.name}}',
+            link:'http://www.fangchengku.com/crowd/{{crowd.id}}',
+            imgUrl:'http://www.fangchengku.com/media/{{product.productimage_set.first.url}}',
+            desc:'{{crowd.description}}',
+            type:'',
+            dataUrl:'',
+            success:function(){},
+            cancel:function(){}
+        }
+        wx.onMenuShareTimeline(data);
+        wx.onMenuShareAppMessage(data);
+        wx.onMenuShareQZone(data);
+        wx.onMenuShareQQ(data);
+    })
+</script>
+{%if crowd.effective%}
+<div style="background-color:rgb(0, 204, 0);padding:5px 15px;color:#fff;font-weight: bold;">
+    剩余时间:<span id="timespan">{{endtime}}</span>
+    <script>
+    countDown("{{crowd.endtime|date:'Y-m-d H:i:s'}}");
+    </script>
+</div>
+{%else%}
+<div style="background-color:#F76260;padding:5px 15px;color:#fff;font-weight: bold;">
+    已结束!
+</div>
+{%endif%}
+<div class="weui-flex" style="align-items: center;padding:5px 15px;">
+    <div class="weui-flex__item" style="">
+        <h4>{{product.name}}</h4>
+    </div>
+    <div style="">
+        <img src="{%static 'icons/fengxiang.png'%}" alt="" class="weui-tabbar__icon">
+    </div>
+</div>
+<a class="weui-cell weui-cell_access" href="javascript:;">
+    <div class="weui-cell__bd">
+        <p>
+            <span class="weui-badge" style="margin-left: 5px;">团购价</span>
+            <span style="color:red;">${{defaultOption.price}}</span>
+            <span style="color: #999999;"><del>{{crowd.market_price}}</del></span>
+        </p>
+    </div>
+    <div class="weui-cell__ft">{{crowd.complete}}/{{crowd.count}}已完成</div>
+</a>
+<div class="weui-progress">
+    <div class="weui-progress__bar">
+        <div class="weui-progress__inner-bar js_progress" style="width: {{percert}}%;"></div>
+    </div>
+</div>
+<div class="weui-panel weui-panel_access">
+
+    <div class="weui-panel__bd">
+        <div class="already_pay_title">已付款</div>
+        <ul class="buyer-list">
+            {%for activeuser in crowd.activeuser_set.all%}
+                {% if activeuser.isparticipation %}
+                <li><img src="{{activeuser.user.avator_url}}" alt=""/></li>
+                {%endif%}
+            {%endfor%}
+            <li><a href="" style="font-color:#999999;font-size: 13px;">更多</a></li>
+        </ul>
+    </div>
+</div>
+<a class="weui-cell weui-cell_access"  id="product-option" href="javascript:;" style="border-bottom: 1px solid #e4e4e4;">
+    <div class="weui-cell__hd">
+        <div>已选:</div>
+    </div>
+    <div class="weui-cell__bd weui-cell_primary">
+        <p class="option_name">{{defaultOption.name}}</p>
+    </div>
+    <span class="weui-cell__ft"></span>
+</a>
+<div style="text-align: center;padding:10px 0;border-bottom: 1px solid #e4e4e4;">
+    详情
+</div>
+<div id="standard-area" class="detail_item_line detail_item_title">规格</div>
+<div>
+    {%for standard in product.standard_set.all%}
+        <div class="detail_item_line detail_item_title">{{standard.name}}</div>
+        {%for item in standard.standardchild%}
+            <div class="detail_item_line">{{item.name}}:{{item.value}}</div>
+        {%endfor%}
+    {%endfor%}
+</div>
+<div style="padding:10px 15px;"  class="detail_body">
+{% autoescape off %}
+{{product.body}}
+{% endautoescape %}    
+</div>
+<div  id="package-area">
+    <div class="detail_item_line detail_item_title">包装</div>
+    <div class="detail_item_line">{{product.package}}</div>
+    <div class="detail_item_line detail_item_title">售后</div>
+    <div class="detail_item_line">{{product.service}}</div>
+</div>
+<div  id="commet-area" style="text-align: center;padding:10px 0;border-bottom: 1px solid #e4e4e4;">
+    评价
+</div>
+<div class="weui-cells" style="font-size: 13px;">
+    {%for commet in product.commet_set.all%}
+        <a class="weui-cell weui-cell_access" href="javascript:;">
+            <div class="weui-cell__hd"><img src="{{commet.user.avator_url}}" alt="" style="width:20px;margin-right:5px;display:block"></div>
+            <div class="weui-cell__bd">
+                <p>{{commet.body}}</p>
+            </div>
+        </a>
+    {%endfor%}
+</div>
+<div style="text-align: center;padding:10px 0;border-bottom: 1px solid #e4e4e4;">
+    评价
+</div>
+<div class="weui-cells" style="font-size: 13px;">
+    {%for commet in crowd.product.commet_set.all%}
+        <a class="weui-cell weui-cell_access" href="javascript:;">
+            <div class="weui-cell__hd"><img src="{{commet.user.avator_url}}" alt="" style="width:20px;margin-right:5px;display:block"></div>
+            <div class="weui-cell__bd">
+                <p>{{commet.body}}</p>
+            </div>
+        </a>
+    {%endfor%}
+</div>
+{%endblock%}

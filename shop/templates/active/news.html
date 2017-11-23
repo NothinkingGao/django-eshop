@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block panel%}
+{% load static%}
+<div class="page article js_show">
+    <div class="page__bd">
+        <article class="weui-article">
+            <h1>新手礼包</h1>
+            <section>
+                <h2 class="title">欢迎来到美味时光</h2>
+                <section>
+                    <p>
+                        美味时光欢迎您,在这里您将能吃到全世界最美味的零食,这些零食不仅健康,而且更加美味!
+                    </p>
+                </section>
+            </section>
+            <h3>新手礼包<span style="padding-left:10px;font-size:13px;color:#888888;">(未领取)</span></h3>
+	        <a href="/detail" class="weui-media-box weui-media-box_appmsg">
+	            <div class="weui-media-box__hd">
+	            	{% load static %}
+	                <img class="weui-media-box__thumb" src="{%static 'icons/weui.png'%}" alt="">
+	            </div>
+	            <div class="weui-media-box__bd">
+	                <h4 class="small_title">Knoppers 牛奶巧克力棒子威化饼干600g/盒</h4>
+	                <p class="weui-media-box__desc">种类:红心橙12个装</p>
+	                <div class="shopcart_price_line">
+		                <div class="weui-flex">
+						    <div class="weui-flex__item">
+						    	<div class="price">价格:$00.00</div>
+						    </div>
+						    <div class="weui-price__count">
+						    	免费领取
+						    </div>
+						</div>
+					</div>
+	            </div>
+	        </a>
+	        <a href="/detail" class="weui-media-box weui-media-box_appmsg">
+	            <div class="weui-media-box__hd">
+	            	{% load static %}
+	                <img class="weui-media-box__thumb" src="{%static 'icons/weui.png'%}" alt="">
+	            </div>
+	            <div class="weui-media-box__bd">
+	                <h4 class="small_title">Knoppers 牛奶巧克力棒子威化饼干600g/盒</h4>
+	                <p class="weui-media-box__desc">种类:红心橙12个装</p>
+	                <div class="shopcart_price_line">
+		                <div class="weui-flex">
+						    <div class="weui-flex__item">
+						    	<div class="price">价格:$00.00</div>
+						    </div>
+						    <div class="weui-price__count">
+						    	免费领取
+						    </div>
+						</div>
+					</div>
+	            </div>
+	        </a>
+        </article>
+
+    </div>
+    <div class="page__ft j_bottom">
+       
+    </div>
+</div>
+{%endblock%}

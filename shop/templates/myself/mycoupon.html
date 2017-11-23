@@ -1,0 +1,25 @@
+{% extends "menubase.html" %}
+{% block panel %}
+{%load static%}
+<div class="weui-panel weui-panel_access">
+            <div class="weui-panel__hd">我的果券</div>
+            <div class="weui-panel__bd">
+                {%for my in mycoupons%}
+                <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
+                    <div class="weui-media-box__hd">
+                        <img class="weui-media-box__thumb" src="/static/icons/active_{{my.coupon.shoptype}}.png" alt="">
+                    </div>
+                    <div class="weui-media-box__bd">
+                        <h4 class="weui-media-box__title">{{my.coupon.get_couponOption_display}}</h4>
+                        <p class="weui-media-box__desc">
+                        	<div class="weui-flex" style="color:#999999;font-size: 13px;">
+	                        	<div class="weui-flex__item">{{my.coupon.description}}</div>
+	                        	<span>{{my.get_useStatus_display}}</span>
+                        	</div>
+                        </p>
+                    </div>
+                </a>
+                {%endfor%}
+            </div>
+        </div>
+{% endblock %}

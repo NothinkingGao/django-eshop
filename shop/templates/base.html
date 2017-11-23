@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+        <meta http-equiv="Cache-Control" content="max-age=7200" />
+        {% block title %}
+        <title>链群</title>
+        {% endblock%}
+        <!-- 引入 WeUI -->
+        {% load static %}
+        <link rel="stylesheet" type="text/css" href="{%static 'style/weui.css'%}" media="all" />
+        <link rel="stylesheet" type="text/css" href="{%static 'style/site.css' %}" media="all" />
+        <link rel="stylesheet" type="text/css" href="{%static 'style/detail.css' %}" media="all" />
+        <link rel="stylesheet" type="text/css" href="{%static 'style/example.css' %}" media="all" />
+
+        <script type="text/javascript" src="{%static 'script/zepto.min.js'%}"></script>
+        <script type="text/javascript" src="{%static 'script/iscroll.js'%}"></script>
+        <script type="text/javascript" src="{%static 'script/swipe.js'%}"></script>
+        <script type="text/javascript" src="{%static 'script/weui.min.js'%}"></script>
+        <script type="text/javascript" src="{%static 'script/countDown.js'%}"></script>
+        <script type="text/javascript" src="{%static 'script/site.js'%}"></script>
+        <script type="text/javascript" src="{%static 'script/js.cookie.js'%}"></script>
+        <script type="text/javascript" src="{%static 'script/json2.js'%}"></script>
+        <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+        <script>
+        $(function(){
+            var fInitWeixin = function(d){
+                wx.config({ // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                    appId: 'wx359d215b1f30df56', // 必填，公众号的唯一标识
+                    timestamp: d.timestamp, // 必填，生成签名的时间戳
+                    nonceStr: d.noncestr, // 必填，生成签名的随机串
+                    signature: d.signature,// 必填，签名，见附录1
+                    jsApiList: ['onMenuShareTimeline','onMenuShareAppMessage','onMenuShareQQ','onMenuShareWeibo','onMenuShareQZone'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+                });
+            }
+            $.ajax({
+                type: 'post',
+                url: '/ajax/get_signature',
+                dataType: 'json',
+                data: {url: location.href},
+                success: function(d){
+                    fInitWeixin(d);
+                    console.log('ajax success...');
+                },
+                error:function(xhr,type){
+                    console.log('ajax error!!!')
+                }
+            })
+        })
+        </script>
+        <style>
+            .weui-product-select {
+              position: fixed;
+              left: 0;
+              bottom: 0;
+              -webkit-transform: translate(0, 100%);
+                      transform: translate(0, 100%);
+              -webkit-backface-visibility: hidden;
+                      backface-visibility: hidden;
+              z-index: 5000;
+              width: 100%;
+              background-color: #EFEFF4;
+              -webkit-transition: -webkit-transform .3s;
+              transition: -webkit-transform .3s;
+              transition: transform .3s;
+              transition: transform .3s, -webkit-transform .3s;
+            }
+            .weui-product-select__stock{
+                display: inline-block;
+                width:30px;
+            }
+            .weui-product-select__count{
+                width: 30px;
+            }
+            .weui-product-select__plus{
+                cursor: pointer;
+            }
+            .weui-product-select__add{
+                cursor: pointer;
+            }
+            .weui-product-select__title{
+                width:100%;
+                height: 84px;
+                border-top: 1px solid #e4e4e4;
+                position: relative;
+            }
+            .weui-product-select__thumb{
+                position: absolute;
+                left: 10px;
+                top: -26px;
+                width: 100px;
+                height: 100px;
+                border-radius: 3px;
+                border: 1px solid #f0f1f3;
+                background-color: #fff;
+                overflow: hidden;
+                display: -webkit-box;
+                -webkit-box-pack: center;
+                -webkit-box-align: center;
+            }
+            .weui-product-select__body{
+
+            }
+            .weui-product-select__item{
+                padding:10px;
+            }
+            .weui-product-select__item span{
+                border:1px solid #e5e5e5;
+                padding:2px 10px;
+                display: inline-block;
+                border-radius: 2px;
+                margin-top:2px;
+            }
+            .standard-select-red{
+                border:1px solid red;color:red;
+            }
+            .weui-product-select__item_hd{
+                padding:10px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="page tabbar js_show">
+            <div class="page__bd" style="height: 100%;">
+                <div class="weui-tab">
+                    <div class="weui-tab__panel">
+                        {% block panel %}
+                        {% endblock%}
+                    </div>
+                    <div class="weui-tabbar">
+                        {% block menu %}
+                        {% endblock%}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

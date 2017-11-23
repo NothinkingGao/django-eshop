@@ -1,0 +1,39 @@
+{% extends "menubase.html" %}
+{% block panel %}
+{%load static%}
+<div class="page__bd">
+    <div class="weui-flex">
+        <div class="weui-flex__item"><div class="order_nav">全部</div></div>
+        <div class="weui-flex__item"><div class="order_nav">待付款</div></div>
+        <div class="weui-flex__item"><div class="order_nav">待收货</div></div>
+        <div class="weui-flex__item"><div class="order_nav">已完成</div></div>
+        <div class="weui-flex__item"><div class="order_nav">已取消</div></div>
+    </div>
+</div>
+<div class="weui-panel weui-panel_access">
+        <div class="weui-panel__bd">
+            {%for order in orders%}
+                <p style="padding:10px 15px 5px;font-size:13px;color:#999999;">订单号:{{order.orderNumber}}</p>
+                {%for item in order.orderitem_set.all%}
+                    <a href="/orderdetail/{{order.id}}" class="weui-media-box weui-media-box_appmsg" style="background-color: #ebebeb;">
+                        <div class="weui-media-box__hd">
+                            <img class="weui-media-box__thumb" src="/media/{{item.thumb}}" alt="">
+                        </div>
+                        <div class="weui-media-box__bd">
+                            <h4 class="weui-media-box__title">{{item.product_name}}</h4>
+                            <p class="weui-media-box__desc">{{item.optionName}}</p>
+                        </div>
+                        <span class="weui-cell__ft"></span>
+                    </a>
+                {%endfor%}
+                <div class="price" style="padding:5px 15px;text-align: right;">共{{order.orderitem_set.all|length}}件商品 合计:${{order.totalMoney}}</div>
+            {%endfor%}
+        </div>
+        <div class="weui-panel__ft">
+            <a href="javascript:void(0);" class="weui-cell weui-cell_access weui-cell_link">
+                <div class="weui-cell__bd" style="text-align: center;">加载更多</div>
+            </a>    
+        </div>
+    </div>
+{%load static%}
+{% endblock %}

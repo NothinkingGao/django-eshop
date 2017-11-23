@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+{% block panel %}
+{% load static %}
+<div class="weui-cells__title">
+购物车
+</div>
+<div class="weui-cells weui-cells_checkbox">
+    <label class="weui-cell weui-check__label" for="select-all" style="color:#999999;font-size: 14px;">
+        <div class="weui-cell__hd">
+            <input class="weui-check" name="select-all" id="select-all" type="checkbox">
+            <i class="weui-icon-checked"></i>
+            <span>全选</span>
+        </div>
+        <div class="weui-cell__bd">
+            <p></p>
+        </div>
+    </label>
+</div>
+{% if shopcart.isEmpty%}
+<div style="text-align: center;padding:20px 0;">
+    <img src="/static/icons/cart.png" alt='' />
+    <h4 style="color:#999999;">购物车为空,请到<a href="/index">商城</a>选择您喜欢的商品!</h4>  
+</div>
+{%else%}
+<div class="weui-cells weui-cells_checkbox" style="margin-top: 0px;">
+    {%for item in shopcart.items%}
+    <div class="weui-cell">
+        <div class="weui-cell__hd">
+            <label class="weui-check__label" for="{{item.id}}">
+                {%if item.check is True%}
+                    <input class="weui-check" name="checkbox1" id="{{item.id}}" checked="checked" type="checkbox">
+                    <i class="weui-icon-checked"></i>
+                {%else%}
+                    <input class="weui-check" name="checkbox1" id="{{item.id}}" type="checkbox">
+                    <i class="weui-icon-checked"></i>
+                {%endif%}
+            </label>
+        </div>
+        <div class="weui-cell__bd">
+            <div class="weui-media-box_appmsg">
+                <div class="weui-media-box__hd">
+                    <a href="/detail/{{item.product.id}}"><img class="weui-media-box__thumb" src="/media/{{item.productOption.avator}}" alt=""></a>
+                </div>
+                <div class="weui-media-box__bd">
+                    <a href="/detail/{{item.product.id}}">
+                        <h4 class="small_title">{{item.product.name}}({{item.productOption.name}})</h4>
+                        {%if item.shoptype != 'product'%}
+                        <p class="weui-media-box__desc" style='font-size:13px;'>{{item.get_shoptype_display}}</p>
+                        {%endif%}
+                    </a>
+                    <div class="shopcart_price_line">
+                        <div class="weui-flex">
+                            <div class="weui-flex__item">
+                                <div class="price">￥{{item.productOption.price}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <span href="javascript:;" class="shopcart-del-icon">
+                <input type="hidden" class="shopcartitem_id" value="{{item.id}}"/>
+                <img src="{%static 'icons/del2.png'%}" alt="" style="position:absolute;right:5px;top:5px;width: 16px;"/>
+            </span>
+            <div class="weui-price__count">
+                <input type="hidden" class="shopcartitem_id" value="{{item.id}}"/>
+                <span class="box item-count__plus">-</span><span class="box_count item-count">{{item.count}}</span><span class="box item-count__add">+</span>
+            </div>
+        </div>
+    </div>
+    {%endfor%}
+    <a href="/index" class="weui-cell weui-cell_link">
+        <div class="weui-cell__bd">再逛逛</div>
+    </a>
+</div>
+{%endif%}
+{%endblock%}
+{%block menu%}
+    <div class="weui-flex__item" style="text-align: center;display:flex;align-items: center;justify-content: center; color: #999999;">
+    	<span>合计:￥<span id="totalMoney">{{shopcart.getMoney}}</span></span>
+    </div>
+    <div class="shopcart_price_pay">
+    	<span class="weui-btn weui-btn_warn shopcart-pay-btn ">去结算</span>
+    </div>
+    <script>
+    //给每一项绑定选择事件
+    $(".weui-check__label input").each(function(){
+        var that=this
+        $(this).bind('click',function(){
+            if($(that).prop('checked')==true){
+                $.get('/ajax/selectCartItem/'+$(that).prop('id'),function(data){
+                    $("#totalMoney").html(data.totalMoney)
+                    console.log(data.result)
+                })
+            }else{
+                $.get('/ajax/unselectCartItem/'+$(that).prop('id'),function(data){
+                    $("#totalMoney").html(data.totalMoney)
+                    console.log(data.result)
+                })
+            }
+        })
+    })
+    //结账按钮
+    $(".shopcart-pay-btn").bind('click',function(){
+        $.get('/ajax/getShopCartStatus',function(result){
+            console.log(result);
+            if(result.count==0){
+                weui.toast('购物车为空!', {duration: 1000,className: "bears"});
+            }
+            else if(result.check==false){
+                weui.toast('请选择您要购买的商品!', {duration: 1000,className: "bears"});
+            }
+            else{
+                window.location.href="/orderConfirm";
+            }
+        })
+    })
+    //购物车全选
+    $("#select-all").bind('click',function(){
+        if($(this).prop('checked')){
+            $("input[name='checkbox1']").each(function(){
+                $(this).prop('checked','checked');
+                $.get('/selectAll/1',function(data){
+                    $("#totalMoney").html(data.totalMoney)
+                    console.log(data.result);
+                })
+            })
+        }else{
+            $("input[name='checkbox1']").each(function(){
+                $(this).prop('checked','');
+                $.get('/selectAll/0',function(data){
+                    $("#totalMoney").html(data.totalMoney)
+                    console.log(data.result);
+                })
+            })
+        }
+    })
+    //从购物车中删除项
+    $(".shopcart-del-icon").bind('click',function(){
+        var that=$(this);
+        var shopcartitem_id=$(this).find(".shopcartitem_id").val();
+        $.get('/delShopCartItem/'+shopcartitem_id,function(data){
+            console.log(data.result)
+            if(data.result==true){
+                $(that).parent().parent().remove();
+                $("#totalMoney").html(data.totalMoney)
+            }
+            else{
+                console.log('delete shopcartitem wrong!')
+            }
+        })
+    })
+    //增加购物车项数量
+    $(".item-count__add").bind('click',function(){
+        var target=$(this).parent().find(".item-count");
+        var count=parseInt($(target).html())
+        if (count<100){
+            count+=1;
+            $(target).html(count);
+            var shopcartitem_id=$(this).parent().find(".shopcartitem_id").val();
+            changeCartItemCount(shopcartitem_id,count);
+        }
+    })
+    //减少购物车项数量
+    $(".item-count__plus").bind('click',function(){
+        var target=$(this).parent().find(".item-count");
+        var count=parseInt($(target).html())
+        if(count>1){
+            count-=1;
+            $(target).html(count);
+            var shopcartitem_id=$(this).parent().find(".shopcartitem_id").val();
+
+            console.log(count);
+            changeCartItemCount(shopcartitem_id,count);
+        }
+    })
+    function changeCartItemCount(shopcartitem_id,count){
+        $.get('/changeShopCartItemCount/'+shopcartitem_id+"/"+count,function(data){
+            console.log(data.result)
+            if(data.result==true){
+                $("#totalMoney").html(data.totalMoney)
+            }else{
+                console.log('change shopcartitem count wrong!')
+            }
+        })
+    }
+</script>
+{%endblock%}

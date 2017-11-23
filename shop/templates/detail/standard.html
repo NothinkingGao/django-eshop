@@ -1,0 +1,21 @@
+{% extends "./detailbase.html" %}
+
+{%block detail_link%}
+    <a href="/{{activetype}}/{{active_id}}">详情</a>
+{%endblock%}
+
+{%block detail_panel%}
+{%load static%}
+<div class="weui-tab">
+    <div class="weui-tab__panel">
+        <div>
+        {%for standard in product.standard_set.all%}
+        	<div class="detail_item_line detail_item_title">{{standard.name}}</div>
+        	{%for item in standard.standardchild%}
+				<div class="detail_item_line">{{item.name}}:{{item.value}}</div>
+			{%endfor%}
+		{%endfor%}
+        </div>
+    </div>
+</div>
+{%endblock%}

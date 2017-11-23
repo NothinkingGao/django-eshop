@@ -1,0 +1,113 @@
+{% extends "detailbase.html" %}
+{%block detail_panel%}
+{%load static%}
+<div class="slide" id="slide1">
+    {% load static %}
+    <ul>
+        <li>
+            <a href="#">
+                <img src="{%static 'ads/1.jpg'%}" data-src="http://7xr193.com1.z0.glb.clouddn.com/1.jpg" alt="">
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <img src="{%static 'ads/2.jpg'%}" data-src="http://7xr193.com1.z0.glb.clouddn.com/2.jpg" alt="">
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <img src="{%static 'ads/3.jpg'%}" data-src="http://7xr193.com1.z0.glb.clouddn.com/3.jpg" alt="">
+            </a>
+        </li>
+    </ul>
+    <div class="dot">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</div>
+<script>
+    $('#slide1').swipeSlide({
+        autoSwipe:true,//自动切换默认是
+        speed:3000,//速度默认4000
+        continuousScroll:true,//默认否
+        transitionType:'cubic-bezier(0.22, 0.69, 0.72, 0.88)',//过渡动画linear/ease/ease-in/ease-out/ease-in-out/cubic-bezier
+        lazyLoad:true,//懒加载默认否
+        firstCallback : function(i,sum,me){
+                    me.find('.dot').children().first().addClass('cur');
+                },
+                callback : function(i,sum,me){
+                    me.find('.dot').children().eq(i).addClass('cur').siblings().removeClass('cur');
+                }
+    });
+</script>
+<div style="background-color:rgb(0, 204, 0);padding:5px;color:#fff;font-weight: bold;">
+    剩余时间:1天5小时32分25秒
+</div>
+<div class="weui-flex" style="align-items: center;padding:5px 15px;">
+    <div class="weui-flex__item" style="">
+        <h4>这是一个很长很长很长长很长的名字</h4>
+    </div>
+    <div style="">
+        <img src="{%static 'icons/fengxiang.png'%}" alt="" class="weui-tabbar__icon">
+    </div>
+</div>
+<a class="weui-cell weui-cell_access" href="javascript:;">
+    <div class="weui-cell__bd">
+        <p>
+            <span class="weui-badge" style="margin-left: 5px;">团购价</span>
+            <span style="color:red;">$19.80</span>
+            <span style="color: #999999;"><del>30.00</del></span>
+        </p>
+    </div>
+    <div class="weui-cell__ft">60/100已完成</div>
+</a>
+<div class="weui-progress">
+    <div class="weui-progress__bar">
+        <div class="weui-progress__inner-bar js_progress" style="width: 80%;"></div>
+    </div>
+</div>
+<div class="weui-panel weui-panel_access">
+
+    <div class="weui-panel__bd">
+        <div class="already_pay_title">已付款</div>
+        <ul class="buyer-list">
+            <li><img src="{%static 'icons/small.png'%}" alt=""/></li>
+            <li><img src="{%static 'icons/small.png'%}" alt=""/></li>
+            <li><img src="{%static 'icons/small.png'%}" alt=""/></li>
+            <li><img src="{%static 'icons/small.png'%}" alt=""/></li>
+            <li><img src="{%static 'icons/small.png'%}" alt=""/></li>
+            <li><img src="{%static 'icons/small.png'%}" alt=""/></li>
+            <li><img src="{%static 'icons/small.png'%}" alt=""/></li>
+            <li><img src="{%static 'icons/small.png'%}" alt=""/></li>
+            <li><img src="{%static 'icons/small.png'%}" alt=""/></li>
+            <li><img src="{%static 'icons/small.png'%}" alt=""/></li>
+            <li><img src="{%static 'icons/small.png'%}" alt=""/></li>
+            <li><img src="{%static 'icons/small.png'%}" alt=""/></li>
+            <li><img src="{%static 'icons/small.png'%}" alt=""/></li>
+            <li><img src="{%static 'icons/small.png'%}" alt=""/></li>
+            <li><img src="{%static 'icons/small.png'%}" alt=""/></li>
+            <li><img src="{%static 'icons/small.png'%}" alt=""/></li>
+            <li><a href="" style="font-color:#999999;font-size: 13px;">更多</a></li>
+        </ul>
+    </div>
+</div>
+<a class="weui-cell weui-cell_access" href="/standard" style="border-bottom: 1px solid #e4e4e4;">
+    <div class="weui-cell__hd">
+        <div>已选:</div>
+    </div>
+    <div class="weui-cell__bd weui-cell_primary">
+        <p>128g一袋装</p>
+    </div>
+    <span class="weui-cell__ft"></span>
+</a>
+<div style="text-align: center;padding:10px 0;border-bottom: 1px solid #e4e4e4;">
+    详情
+</div>
+<div style="padding:10px 15px;">
+这里是产品详情介绍....
+</div>
+<div style="text-align: center;padding:10px 0;border-bottom: 1px solid #e4e4e4;">
+    评价
+</div>
+{%endblock%}

@@ -1,0 +1,86 @@
+{% extends "menubase.html" %}
+{% block panel %}
+{%load static%}
+<div>
+	<a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg" style="border-bottom: 1px solid #e4e4e4;background-color: #fff;">
+            <div class="weui-media-box__hd">
+                <img class="weui-media-box__thumb" src="{{user.avator_url}}" alt="">
+            </div>
+            <div class="weui-media-box__bd">
+                <h4 class="weui-media-box__title">{{user.name}}</h4>
+                <p class="weui-media-box__desc">会员等级:{{user.get_rank_display}}</p>
+            </div>
+    </a>
+</div>
+<div class="weui-panel" style="margin-top: 20px;padding:20px 0;">
+    <div class="weui-panel__bd">
+        <div class="weui-media-box weui-media-box_small-appmsg">
+            <div class="weui-cells">
+                <a class="weui-cell weui-cell_access" href="/order">
+                    <div class="weui-cell__hd"><img src="{%static 'icons/u2871.png'%}" style="width:25px;margin-right:5px;display:block"></div>
+                    <div class="weui-cell__bd weui-cell_primary">
+                        <p>订单</p>
+                    </div>
+                    <span class="weui-cell__ft"></span>
+                </a>
+                <a class="weui-cell weui-cell_access" href="/myservice">
+                    <div class="weui-cell__hd"><img src="{%static 'icons/u3180.png'%}" style="width:25px;margin-right:5px;display:block"></div>
+                    <div class="weui-cell__bd weui-cell_primary">
+                        <p>售后</p>
+                    </div>
+                    <span class="weui-cell__ft"></span>
+                </a>
+                <a class="weui-cell weui-cell_access" href="/collection">
+                    <div class="weui-cell__hd"><img src="{%static 'icons/shouchang.png'%}" style="width:25px;margin-right:5px;display:block"></div>
+                    <div class="weui-cell__bd weui-cell_primary">
+                        <p>收藏</p>
+                    </div>
+                    <span class="weui-cell__ft"></span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="weui-panel" style="margin-top: 30px;padding:20px 0;">
+    <div class="weui-panel__bd">
+        <div class="weui-media-box weui-media-box_small-appmsg">
+            <div class="weui-cells">
+                <a class="weui-cell weui-cell_access" href="/coin">
+                    <div class="weui-cell__hd"><img src="{%static 'icons/u3198.png'%}" style="width:25px;margin-right:5px;display:block"></div>
+                    <div class="weui-cell__bd weui-cell_primary">
+                        <p>
+                        	<span>果币</span>
+                        </p>
+                    </div>
+                    <span class="weui-cell__ft"></span>
+                </a>
+                <a class="weui-cell weui-cell_access" href="/mycoupon">
+                    <div class="weui-cell__hd"><img src="{%static 'icons/u3209.png'%}" style="width:25px;margin-right:5px;display:block"></div>
+                    <div class="weui-cell__bd weui-cell_primary">
+                        <p>
+                        	<span>果券</span>
+                        </p>
+                    </div>
+                    <span class="weui-cell__ft"></span>
+                </a>
+            </div>
+        </div>
+<!--                 <a class="weui-cell weui-cell_access" href="/setup" style="margin-top: 100px;">
+    <div class="weui-cell__hd"><img src="{%static 'icons/u3224.png'%}" style="width:20px;margin-right:5px;display:block"></div>
+    <div class="weui-cell__bd weui-cell_primary">
+        <p>设置</p>
+    </div>
+    <span class="weui-cell__ft"></span>
+</a> -->
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    //更改首页导航处文字和图标颜色
+    $(function(){
+        $("#shop_myself").addClass('weui-bar__item_on').find(".weui-tabbar__icon").attr('src','/static/icons/me_change.png');;
+    })
+</script>
+
+{%endblock%}

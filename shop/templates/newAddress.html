@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+{% block panel%}
+{% load static%}
+<div class="weui-cells__title">新增收货地址</div>
+<div class="weui-cells weui-cells_form">
+    <form action="/newAddress/{{url}}" method="post">
+        {% csrf_token %}
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">收货人:</label></div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" name="name" placeholder="请输入收货人" type="text">
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">手机号:</label></div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" pattern="[0-9]*" name="mobile" placeholder="请输入手机号" type="tel">
+            </div>
+        </div>
+<!--         <div class="weui-cell weui-cell_vcode">
+    <div class="weui-cell__hd">
+        <label class="weui-label">手机号:</label>
+    </div>
+    <div class="weui-cell__bd">
+        <input class="weui-input" pattern="[0-9]*" name="mobile" placeholder="请输入手机号" type="tel">
+    </div>
+    <div class="weui-cell__ft">
+        <button class="weui-vcode-btn">获取验证码</button>
+    </div>
+</div> -->
+<!--         <div class="weui-cell">
+    <div class="weui-cell__hd"><label class="weui-label">手机验证码:</label></div>
+    <div class="weui-cell__bd">
+        <input class="weui-input" name="verifycode" placeholder="请输入收到的验证码" type="text">
+    </div>
+</div> -->
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">所在地区:</label></div>
+            <div class="weui-cell__bd">
+                <input type="hidden" id="provice_id" name="provice_id" value="1"/> 
+                <input type="hidden" id="city_id" name="city_id" value=""/> 
+                <input type="hidden" id="region_id" name="region_id" value="1"/> 
+                <div id="location" name="location" style="height:auto">点击选择城市</div>
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">乡村街道:</label></div>
+            <div class="weui-cell__bd">
+                <input type="hidden" id="country_id" name="country_id" value=""/>
+                <div id="country" name="country" style="height:auto">点击选择乡村街道</div>
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">详细地址:</label></div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" name="detail"  placeholder="请输入详细地址">
+            </div>
+        </div>
+        <div class="weui-cell weui-cell_switch" style="margin-top: 50px;border-bottom: 1px solid #e5e5e5;">
+            <div class="weui-cell__bd">设为默认收货地址</div>
+            <div class="weui-cell__ft">
+                <label for="switchCP" class="weui-switch-cp">
+                    <input id="switchCP" class="weui-switch-cp__input" name="isdefault" checked="checked" type="checkbox">
+                    <div class="weui-switch-cp__box"></div>
+                </label>
+            </div>
+        </div>
+        <input type="submit" href="/newAddress" value="保存并使用" class="weui-btn weui-btn_warn" />
+    </form>
+    {%for field in form%}
+        {{field.errors}}
+    {%endfor%}
+    <script>
+        $("#location").bind('click',function(){
+            console.log('get the point!')
+            weui.picker(
+            [
+                {%for item in provice%}
+                    {
+                        label: '{{item.name}}',
+                        value: {{item.id}},
+                        children: [
+                            {%for city in item.city_set.all%}
+                                {
+                                    label: '{{city.name}}',
+                                    value: {{city.id}},
+                                    children: [
+                                        {%for region in city.region_set.all%}
+                                        {
+                                            label: '{{region.name}}',
+                                            value: {{region.id}}
+                                        },
+                                        {%endfor%}
+                                    ]
+                                },
+                            {%endfor%}
+                        ]
+                    },
+                {%endfor%}
+        ], {
+            depth: 3,
+            defaultValue: [0, 1, 1],
+            onChange: function (result) {
+                //console.log(result[0],result[1],result[2]);
+                var address=result[0].label+result[1].label+result[2].label;
+                $("#location").html(address)
+                $("#provice_id").val(result[0].value)
+                $("#city_id").val(result[1].value)
+                $("#region_id").val(result[2].value)
+
+                $("#country").html('点击选择街道');
+            },
+            onConfirm: function (result) {
+                var address=result[0].label+result[1].label+result[2].label;
+                $("#location").html(address);
+                $("#provice_id").val(result[0].value);
+                $("#city_id").val(result[1].value);
+                $("#region_id").val(result[2].value);
+            },
+            id: 'cascadePicker'
+        });
+        })
+</script>
+<script>
+    $("#country").bind('click',function(){
+            var regionID=$("#region_id").val();
+            var dataObj=new Array();
+            $.getJSON("/ajax/getCountry/"+regionID,function(data){
+            var obj=JSON.parse(data.data);
+             
+            for(var i=0;i<obj.length;i++){
+                dataObj.push({label:obj[i].fields.name,value:obj[i].pk});
+            }
+            weui.picker(dataObj,
+            {
+                defaultValue: [dataObj[0].value],
+                className: 'custom-classname',
+                onChange: function (result) {
+                    //console.log(item, index);
+                    $("#country").html(result[0].label);
+                    $("#country_id").val(result[0].value);
+                },
+                onConfirm: function (result) {
+                    console.log(result);
+                    $("#country").html(result[0].label);
+                    $("#country_id").val(result[0].value);
+                },
+                id: 'picker'
+            });
+        })
+    })
+</script>
+</div>
+{%endblock%}

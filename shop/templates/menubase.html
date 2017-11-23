@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block menu %}
+{% load static %}
+<a href="/index" id="shop_index" class="weui-tabbar__item">
+    <span style="display: inline-block;position: relative;">
+        <img src="{%static 'icons/shouye.png'%}" alt="" class="weui-tabbar__icon">
+    </span>
+    <p class="weui-tabbar__label">首页</p>
+</a>
+<a href="/active" id="shop_active" class="weui-tabbar__item">
+    <span style="display: inline-block;position: relative;">
+        <img src="{%static 'icons/huodong.png'%}" alt="" class="weui-tabbar__icon">
+        <span class="" id="active_count" style="position: absolute;top: -2px;right: -13px;"></span>
+    </span>
+    <p class="weui-tabbar__label">活动</p>
+</a>
+<a href="/shopcart" id="shop_cart" class="weui-tabbar__item">
+    <span style="display: inline-block;position: relative;">
+        <img src="{%static 'icons/cart.png'%}" alt="" class="weui-tabbar__icon">
+        <span id="shopcart_count" class="weui-badge product-count" style="position: absolute;top: -2px;right: -13px;"></span>
+    </span>
+    <p class="weui-tabbar__label">购物车</p>
+</a>
+<a href="/myself" id="shop_myself" class="weui-tabbar__item">
+    <img src="{%static 'icons/me.png'%}" alt="" class="weui-tabbar__icon">
+    <p class="weui-tabbar__label">我的</p>
+</a>
+<script>
+    //刷新购物车中产品数
+    $.get('/getShopCartItemCount',function(data){
+        if (data.count!=0){
+            $("#shopcart_count").html(data.count).addClass("weui-badge");
+        }else{
+            $("#shopcart_count").removeClass("weui-badge");
+        }
+    });
+    //刷新购物车中未读活动数
+    $.get('/getActiveCount',function(data){
+        if (data.count!=0){
+            $("#active_count").html(data.count).addClass("weui-badge");
+        }else{
+            $("#active_count").removeClass("weui-badge");
+        }
+    })
+</script>
+{%endblock%}

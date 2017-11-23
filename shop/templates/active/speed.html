@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block panel%}
+{% load static%}
+<div class="detail-nav weui-flex">
+	<img src="{%static 'icons/xiaoyu.png'%}" alt="" class="weui-tabbar__icon" style="width:16px;height:16px;padding:5px 0;">
+    <div class="weui-flex__item detail-nav-center">
+    	{{speed.name}}
+    </div>
+</div>
+<div id="speed" style="text-align: center;padding:30px">
+	<div>
+		<img src="/static/icons/active_speed.png" alt=""/>
+	</div>
+	{%if speed.effective%}
+	<div style="color:#999999;">
+		<span>剩余时间:<span>
+	</div>
+	<div>
+		<span id="timespan" style="color:red;font-weight: bold;">{{endtime}}</span>
+	    <script>
+	    countDown("{{speed.endtime|date:'Y-m-d H:i:s'}}");
+	    </script>
+	</div>
+	<h4>您所在区域配送正在加速...</h4>
+	{%else%}
+		<h4>加速已结束.</h4>
+	{%endif%}
+	<div style="margin-top:15px;">
+		{{speed.description}}
+	</div>
+	<script>
+    //微信分享
+    wx.ready(function(){
+        var data={
+            title:'{{speed.name}}',
+            link:'http://www.fangchengku.com/speed/{{speed.id}}',
+            imgUrl:'http://www.fangchengku.com/static/icons/active_speed.png',
+            desc:'{{speed.description}}',
+            type:'',
+            dataUrl:'',
+            success:function(){},
+            cancel:function(){}
+        }
+        wx.onMenuShareTimeline(data);
+        wx.onMenuShareAppMessage(data);
+        wx.onMenuShareQZone(data);
+        wx.onMenuShareQQ(data);
+    })
+</script>
+</div>
+{%endblock%}

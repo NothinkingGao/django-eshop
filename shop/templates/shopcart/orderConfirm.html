@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+{% block panel %}
+{%load static%}
+<script>
+function jsApiCall()
+    {
+        WeixinJSBridge.invoke(
+            'getBrandWCPayRequest',
+            {
+               "appId":"{{data.appId}}",     //公众号名称，由商户传入     
+               "timeStamp":"{{data.timeStamp}}",         //时间戳，自1970年以来的秒数     
+               "nonceStr":"{{data.nonceStr}}", //随机串     
+               "package":"{{data.package}}",     
+               "signType":"MD5",         //微信签名方式：     
+               "paySign":"{{data.paySign}}"//微信签名 
+           },
+            function(res){
+                WeixinJSBridge.log(res.err_msg);
+                switch(res.err_msg){
+                    case 'get_brand_wcpay_request:ok':
+                        window.location.href="/paySuccessPage"
+                        break;
+                    case 'get_brand_wcpay_request:cancel':
+                        alert('cancel!');
+                        break;
+                    case 'get_brand_wcpay_request:fail':
+                        alert('fail!');
+                        break;
+                    default:
+                        break;
+                }
+            }
+        );
+    }
+
+    function callpay()
+    {
+        if (typeof WeixinJSBridge == "undefined"){
+            if( document.addEventListener ){
+                document.addEventListener('WeixinJSBridgeReady', jsApiCall, false);
+            }else if (document.attachEvent){
+                document.attachEvent('WeixinJSBridgeReady', jsApiCall); 
+                document.attachEvent('onWeixinJSBridgeReady', jsApiCall);
+            }
+        }else{
+            jsApiCall();
+        }
+    }
+</script>
+<div class="weui-panel weui-panel_access">
+        <div class="weui-panel__hd">
+        确认订单
+        </div>
+        <div class="weui-panel__bd">
+        	<div class="weui-cells" style="margin-top: 0;">
+            {%if address is None%}
+                <input type="hidden" id="isaddress"/>
+                <a href="/newAddress/{{request.META.PATH_INFO}}" class="weui-flex" style="align-items: center;justify-content: flex-start;padding: 10px 15px;">
+                        <div style="width:32px;height: 32px;line-height: 32px;padding-right: 0.8em;">
+                            <img src="{%static 'icons/jia.png'%}" alt="">
+                        </div>
+                        <h4 class="weui-media-box__title">添加收货地址</h4>
+                </a>
+            {%else%}
+                <a class="weui-cell weui-cell_access" href="/address">
+                        <div class="weui-cell__bd weui-cell_primary">
+                            <h4>
+                                <span>{{address.receive_name}}</span>
+                                <span>{{address.name}}</span>
+                                <span class="weui-badge" style="margin-left: 5px;">收货地址</span>
+                            </h4>
+                            <p>
+                                <span style="font-size:14px;">{{address.location}}{{address.detail}}</span>
+                            </p>
+                        </div>
+                        <span class="weui-cell__ft"></span>
+                </a>
+            {%endif%}
+                <a class="weui-cell weui-cell_access" href="javascript:;">
+                    <div class="weui-cell__bd weui-cell_primary">
+                    	<div class="weui-flex" style="text-align: center;padding:5px 0;">
+                            {%for item in shopcart.checkItems%}
+    							<div class="weui-flex__item">
+                            		<img src="/media/{{item.productOption.avator}}" alt="" class="img-max" />
+                            	</div>
+                            {%endfor%}
+                        	<div class="weui-flex__item">
+                        	</div>
+                        	<div class="weui-flex__item">
+                        	</div>
+                        </div>
+                    </div>
+                    <span class="weui-cell__ft">共{{shopcart.checkItemsCount}}件</span>
+                </a>
+                <a class="weui-cell weui-cell_access" href="">
+                        <div class="weui-cell__bd weui-cell_primary"  style="font-size: 14px;">
+                            <p>
+                            	<span>微信支付</span>
+                            </p>
+                            <p>
+                            	<span>官方配送</span>
+                            	<span>预计于10分钟后到达</span>
+                            </p>
+                        </div>
+                        <span class="weui-cell__ft"></span>
+                </a>
+                <a class="weui-cell weui-cell_switch" href="">
+                        <div class="weui-cell__bd weui-cell_primary"   style="font-size: 14px;">
+                            <p>
+                            	<span>果币:</span>
+                            	<span>共{{user.coinCount}}点,最多可抵用￥{{coin_equal}}</span>
+                            </p>
+                        </div>
+                        <span class="weui-cell__ft">
+                        	<label for="switchCP" class="weui-switch-cp">
+                                {%if shopcart.useCoin%}
+		                        <input id="switchCP" class="weui-switch-cp__input" type="checkbox" checked="checked">
+                                {%else%}
+                                <input id="switchCP" class="weui-switch-cp__input" type="checkbox">
+                                {%endif%}
+		                        <div class="weui-switch-cp__box"></div>
+		                    </label>
+                        </span>
+                </a>
+                <a class="weui-cell weui-cell_access" href="/useCoupon">
+                        <div class="weui-cell__bd weui-cell_primary"   style="font-size: 14px;">
+                            <p> 	
+                                {%if mycoupon is not None%}
+                                <span>运费券</span>
+                            	<span style="font-size:12px;color:red;">({{mycoupon.coupon.name}})</span>
+                                {%else%}
+                                <span>使用优惠券:</span>
+                                {%endif%}
+                            </p>
+                        </div>
+                        <span class="weui-cell__ft">
+                        </span>
+                </a>
+                <a class="weui-cell weui-cell_switch" href="" style="font-size:13px;">
+                    +运费<span id="freight"></span>元
+                    {%if mycoupon is not None%}
+                    <span  style="font-size:12px;color:red;" id="coupon-reduce">
+                    
+                    </span>
+                    {%endif%}
+                </a>
+<!--                 <a class="weui-cell weui-cell_access" href="">
+        <div class="weui-cell__bd weui-cell_primary"   style="font-size: 14px;">
+            <p>
+                <span>部落:</span>
+                <span>{{user.tribe.name}}</span>
+            </p>
+        </div>
+</a> -->
+            <a class="weui-cell weui-cell_access" href="javascript:;" style="margin-top:15px;color:red;">
+                <span>合计:</span><span id="cartMoney"></span>
+                <span style="font-size:13px;" id="useCoinMoney"></span>
+            </a>
+        	</div>
+        </div>
+</div>
+<script>
+    function getTotalMoney(){
+        $.get('/ajax/getMoney',function(data){
+            $("#cartMoney").html(data.totalMoney);
+            if(data.useCoins>0){
+                $("#useCoinMoney").html('(果币:-'+data.useCoins/100+')');
+            }
+            else{
+                $("#useCoinMoney").html('')
+            }
+            if(data.mailReduce>0){
+                $("#coupon-reduce").html('(-运费券'+data.mailReduce+'元)');
+            }
+            else{
+                $("#coupon-reduce").html('(-优惠券'+data.reduce+'元)')
+            }
+            
+            $("#freight").html(data.freight);
+            $("#totalMoney").html(data.totalMoney);
+            console.log(data)
+        })
+    }
+    getTotalMoney();
+    $("#switchCP").bind('change',function(){
+        $.get('/ajax/isUseCoin/'+this.checked,function(data){
+            console.log(data);
+            getTotalMoney()
+        })
+    })
+</script>
+{%endblock%}
+{%block menu%}	
+    <div class="weui-flex__item" style="text-align: center;display:flex;align-items: center;justify-content: center; color: #999999;">
+        <span>实付:￥<span id="totalMoney"></span></span>
+    </div>
+    <div class="shopcart_price_pay">
+        <div class="weui-btn weui-btn_warn shopcart-pay-btn">立即下单</div>
+    </div>
+    <script>
+        $(".shopcart-pay-btn").bind('click',function(){
+            console.log($("#isaddress"));
+            //查询收货地址
+            if($("#isaddress").length==1){
+                weui.toast('请选择收货地址!')
+            }
+            else{
+                var totalMoney=$.get('/ajax/getMoney',function(data){
+                    if(data.totalMoney>0){
+                        callpay();
+                    }else{
+                        //直接生成订单
+                        window.location='/takeOrderDirect'
+                    }
+                })
+            }
+        })
+    </script>
+{%endblock%}
