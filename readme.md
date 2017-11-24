@@ -1,3 +1,5 @@
+#!!!项目的说明还没写完,对Django不是很懂的朋友不要轻易安装哦
+
 ### 本项目涉及到的技术及相关库
 1. python
 2. django
@@ -6,6 +8,8 @@
 5. weui,weui.js
 6. django-ckeditor
 7. smart_selects,
+8. nginx
+9. uwsgi
 
 ### 启动及运行方法
 ##### 打开django配置文件
